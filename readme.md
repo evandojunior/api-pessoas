@@ -25,7 +25,7 @@ Para criar a base de dados execute o comando:
 $ touch database/database.sqlite
 ```
 
-Para realizar subir a estrutura do banco rode:
+Para subir a estrutura do banco rode:
 ```bash
 $ php artisan migrate
 ```

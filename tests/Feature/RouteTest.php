@@ -8,14 +8,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RouteTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    public function testExisteRotaDocumentacao()
     {
-        $response = $this->get('/');
+        $response = $this->get('/api/documentation');
+
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testExisteRotaPessoa()
+    {
+        $response = $this->get('/api/pessoas');
+
+        $this->assertEquals(200, $response->status());
+    }
+
+    public function testExisteRotaEndereco()
+    {
+        $response = $this->get('/api/enderecos');
 
         $response->assertStatus(200);
     }

@@ -20,7 +20,7 @@ class CreateEnderecosTable extends Migration
             $table->unsignedInteger('numero');
             $table->string('complemento')->nullable();
             $table->string('bairro');
-            $table->string('pais');
+            $table->string('pais')->nullable();
             $table->string('uf', 2);
             $table->string('cidade');
             $table->timestamps();

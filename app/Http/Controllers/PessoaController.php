@@ -78,6 +78,10 @@ class PessoaController extends Controller
      *                 ),
      *                 @OA\Property(property="sexo", enum={"Masculino", "Feminino", "Outros"}),
      *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
      *                     property="logradouro",
      *                     type="string",
      *                 ),
@@ -102,17 +106,11 @@ class PessoaController extends Controller
      *                     property="cidade",
      *                     type="string",
      *                 ),
-     *                 example={
-     *                     "cep": "95873-377",
-     *                     "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-     *                     "numero": "4557",
-     *                     "complemento": "Apto 89",
-     *                     "bairro": "Rua Perez",
-     *                     "pais": "Brasil",
-     *                     "uf": "AM",
-     *                     "cidade": "Carrara do Leste"
-     *                  }
-     *              )
+     *                 @OA\Property(
+     *                     property="pais",
+     *                     type="string",
+     *                 ),
+     *            )
      *         ),
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -134,7 +132,11 @@ class PessoaController extends Controller
      *                     property="nascionalidade",
      *                     type="string",
      *                 ),
-     *                 @OA\Property(property="sexo", type="string",enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(property="sexo", enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
      *                 @OA\Property(
      *                     property="logradouro",
      *                     type="string",
@@ -142,6 +144,10 @@ class PessoaController extends Controller
      *                 @OA\Property(
      *                     property="complemento",
      *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
      *                 ),
      *                 @OA\Property(
      *                     property="bairro",
@@ -157,25 +163,25 @@ class PessoaController extends Controller
      *                     type="string",
      *                 ),
      *                 @OA\Property(
-     *                     property="numero",
-     *                     type="integer",
+     *                     property="pais",
+     *                     type="string",
      *                 ),
      *                 example={
-     *                 "nome": "Dr. Christopher Ricardo Ortega",
-     *                 "data_nascimento": "1988-10-14",
-     *                 "nascionalidade": "Americano",
-     *                 "cpf": "68204823533",
-     *                 "sexo": "Outros",
-     *                 "cep": "95873-377",
-     *                 "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-     *                 "numero": "4557",
-     *                 "complemento": "Apto 89",
-     *                 "bairro": "Rua Perez",
-     *                 "pais": "Brasil",
-     *                 "uf": "AM",
-     *                 "cidade": "Carrara do Leste"
-     *                  }
-     *              )
+     *                  "nome": "Dr. Christopher Ricardo Ortega",
+     *                  "data_nascimento": "1988-10-14",
+     *                  "nascionalidade": "Brasileiro",
+     *                  "cpf": "68204823533",
+     *                  "sexo": "Outros",
+     *                  "cep": "95873-377",
+     *                  "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                  "numero": "4557",
+     *                  "complemento": "Apto 89",
+     *                  "bairro": "Rua Perez",
+     *                  "uf": "AM",
+     *                  "cidade": "Carrara do Leste",
+     *                  "pais": "Brasil"
+     *                 }
+     *            )
      *         )
      *     ),
      *     @OA\Response(
@@ -197,7 +203,7 @@ class PessoaController extends Controller
         $validator = \Validator::make($request->all(), [
           "nome"            => 'required',
           "data_nascimento" => 'required',
-          "cpf"             => 'required',
+          "cpf"             => 'required|unique:pessoas',
           "sexo"            => 'required',
         ]);
 
@@ -205,10 +211,10 @@ class PessoaController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $data = $request->all();
-
-        if (!$endereco = Endereco::create($request->all())) {
+        if ($request->cep && ($endereco = Endereco::create($request->all()))) {
             $data['endereco_id'] = $endereco->id;
         }
+
         if (!$pessoa = Pessoa::create($data)) {
             return response()->json('Não foi possível realizar essa operação', 422);
         }
@@ -273,7 +279,7 @@ class PessoaController extends Controller
      *      ),
      *     @OA\RequestBody(
      *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
      *                     property="nome",
@@ -294,6 +300,10 @@ class PessoaController extends Controller
      *                 ),
      *                 @OA\Property(property="sexo", enum={"Masculino", "Feminino", "Outros"}),
      *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
      *                     property="logradouro",
      *                     type="string",
      *                 ),
@@ -318,80 +328,27 @@ class PessoaController extends Controller
      *                     property="cidade",
      *                     type="string",
      *                 ),
-     *                 example={
-     *                     "cep": "95873-377",
-     *                     "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-     *                     "numero": "4557",
-     *                     "complemento": "Apto 89",
-     *                     "bairro": "Rua Perez",
-     *                     "pais": "Brasil",
-     *                     "uf": "AM",
-     *                     "cidade": "Carrara do Leste"
-     *                  }
-     *              )
-     *         ),
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="nome",
+     *                     property="pais",
      *                     type="string",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="data_nascimento",
-     *                     type="string",
-     *                     format="date"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="cpf",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="nascionalidade",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(property="sexo", type="string",enum={"Masculino", "Feminino", "Outros"}),
-     *                 @OA\Property(
-     *                     property="logradouro",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="complemento",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="bairro",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="uf",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(
-     *                     required={"uf"},
-     *                     property="cidade",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="numero",
-     *                     type="integer",
      *                 ),
      *                 example={
-     *                 "nome": "Dr. Christopher Ricardo Ortega",
-     *                 "data_nascimento": "1988-10-14",
-     *                 "nascionalidade": "Americano",
-     *                 "cpf": "68204823533",
-     *                 "sexo": "Outros",
-     *                 "cep": "95873-377",
-     *                 "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-     *                 "numero": "4557",
-     *                 "complemento": "Apto 89",
-     *                 "bairro": "Rua Perez",
-     *                 "pais": "Brasil",
-     *                 "uf": "AM",
-     *                 "cidade": "Carrara do Leste"
-     *                  }
-     *              )
+     *                  "nome": "Dr. Christopher Ricardo Ortega",
+     *                  "data_nascimento": "1988-10-14",
+     *                  "nascionalidade": "Brasileiro",
+     *                  "cpf": "68204823533",
+     *                  "sexo": "Masculino",
+     *                  "cep": "95873-377",
+     *                  "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                  "numero": "4557",
+     *                  "complemento": "Apto 89",
+     *                  "bairro": "Rua Perez",
+     *                  "pais": "Brasil",
+     *                  "uf": "AM",
+     *                  "cidade": "Carrara do Leste",
+     *                  "pais": "Brasil"
+     *                 }
+     *            )
      *         )
      *     ),
      *      @OA\Response(response=200,
@@ -435,11 +392,11 @@ class PessoaController extends Controller
             $data['endereco_id'] = $endereco->id;
         }
 
-        if (!$pessoa = Pessoa::update($data)) {
+        if (!$pessoa->update($data)) {
             return response()->json('Não foi possível realizar essa operação', 422);
         }
         return response()->json([
-          'message' => 'Pessoa cadastrada com sucesso',
+          'message' => 'Pessoa atualizada com sucesso',
           'data' => $pessoa
         ]);
     }

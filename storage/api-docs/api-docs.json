@@ -31,15 +31,23 @@
                 "description": "",
                 "operationId": "store",
                 "requestBody": {
+                    "description": "Preencha os campos para cadastrar um endereço",
+                    "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "cep": {
+                                        "type": "string"
+                                    },
                                     "logradouro": {
                                         "type": "string"
                                     },
                                     "complemento": {
                                         "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
                                     },
                                     "bairro": {
                                         "type": "string"
@@ -53,8 +61,42 @@
                                         ],
                                         "type": "string"
                                     },
+                                    "pais": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cep": {
+                                        "type": "string"
+                                    },
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
                                     "numero": {
                                         "type": "integer"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "pais": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object",
@@ -126,15 +168,22 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "cep": {
+                                        "type": "string"
+                                    },
                                     "logradouro": {
                                         "type": "string"
                                     },
                                     "complemento": {
                                         "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
                                     },
                                     "bairro": {
                                         "type": "string"
@@ -148,8 +197,8 @@
                                         ],
                                         "type": "string"
                                     },
-                                    "numero": {
-                                        "type": "integer"
+                                    "pais": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object",
@@ -170,6 +219,9 @@
                 "responses": {
                     "200": {
                         "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
                 }
             },
@@ -250,6 +302,9 @@
                                             "Outros"
                                         ]
                                     },
+                                    "cep": {
+                                        "type": "string"
+                                    },
                                     "logradouro": {
                                         "type": "string"
                                     },
@@ -270,19 +325,12 @@
                                             "uf"
                                         ],
                                         "type": "string"
+                                    },
+                                    "pais": {
+                                        "type": "string"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "cep": "95873-377",
-                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-                                    "numero": "4557",
-                                    "complemento": "Apto 89",
-                                    "bairro": "Rua Perez",
-                                    "pais": "Brasil",
-                                    "uf": "AM",
-                                    "cidade": "Carrara do Leste"
-                                }
+                                "type": "object"
                             }
                         },
                         "application/json": {
@@ -302,18 +350,23 @@
                                         "type": "string"
                                     },
                                     "sexo": {
-                                        "type": "string",
                                         "enum": [
                                             "Masculino",
                                             "Feminino",
                                             "Outros"
                                         ]
                                     },
+                                    "cep": {
+                                        "type": "string"
+                                    },
                                     "logradouro": {
                                         "type": "string"
                                     },
                                     "complemento": {
                                         "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
                                     },
                                     "bairro": {
                                         "type": "string"
@@ -327,15 +380,15 @@
                                         ],
                                         "type": "string"
                                     },
-                                    "numero": {
-                                        "type": "integer"
+                                    "pais": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
                                     "nome": "Dr. Christopher Ricardo Ortega",
                                     "data_nascimento": "1988-10-14",
-                                    "nascionalidade": "Americano",
+                                    "nascionalidade": "Brasileiro",
                                     "cpf": "68204823533",
                                     "sexo": "Outros",
                                     "cep": "95873-377",
@@ -343,9 +396,9 @@
                                     "numero": "4557",
                                     "complemento": "Apto 89",
                                     "bairro": "Rua Perez",
-                                    "pais": "Brasil",
                                     "uf": "AM",
-                                    "cidade": "Carrara do Leste"
+                                    "cidade": "Carrara do Leste",
+                                    "pais": "Brasil"
                                 }
                             }
                         }
@@ -406,64 +459,6 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "nome": {
-                                        "type": "string"
-                                    },
-                                    "data_nascimento": {
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "cpf": {
-                                        "type": "string"
-                                    },
-                                    "nascionalidade": {
-                                        "type": "string"
-                                    },
-                                    "sexo": {
-                                        "enum": [
-                                            "Masculino",
-                                            "Feminino",
-                                            "Outros"
-                                        ]
-                                    },
-                                    "logradouro": {
-                                        "type": "string"
-                                    },
-                                    "complemento": {
-                                        "type": "string"
-                                    },
-                                    "numero": {
-                                        "type": "integer"
-                                    },
-                                    "bairro": {
-                                        "type": "string"
-                                    },
-                                    "uf": {
-                                        "type": "string"
-                                    },
-                                    "cidade": {
-                                        "required": [
-                                            "uf"
-                                        ],
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "cep": "95873-377",
-                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
-                                    "numero": "4557",
-                                    "complemento": "Apto 89",
-                                    "bairro": "Rua Perez",
-                                    "pais": "Brasil",
-                                    "uf": "AM",
-                                    "cidade": "Carrara do Leste"
-                                }
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "properties": {
@@ -481,18 +476,23 @@
                                         "type": "string"
                                     },
                                     "sexo": {
-                                        "type": "string",
                                         "enum": [
                                             "Masculino",
                                             "Feminino",
                                             "Outros"
                                         ]
                                     },
+                                    "cep": {
+                                        "type": "string"
+                                    },
                                     "logradouro": {
                                         "type": "string"
                                     },
                                     "complemento": {
                                         "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
                                     },
                                     "bairro": {
                                         "type": "string"
@@ -506,17 +506,17 @@
                                         ],
                                         "type": "string"
                                     },
-                                    "numero": {
-                                        "type": "integer"
+                                    "pais": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
                                     "nome": "Dr. Christopher Ricardo Ortega",
                                     "data_nascimento": "1988-10-14",
-                                    "nascionalidade": "Americano",
+                                    "nascionalidade": "Brasileiro",
                                     "cpf": "68204823533",
-                                    "sexo": "Outros",
+                                    "sexo": "Masculino",
                                     "cep": "95873-377",
                                     "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
                                     "numero": "4557",

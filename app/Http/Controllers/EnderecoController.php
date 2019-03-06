@@ -44,9 +44,15 @@ class EnderecoController extends Controller
      *     operationId="store",
      *     tags={"Endereços"},
      *     @OA\RequestBody(
+     *         description="Preencha os campos para cadastrar um endereço",
+     *         required=true,
      *         @OA\MediaType(
-     *             mediaType="application/json",
+     *             mediaType="multipart/form-data",
      *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
      *                 @OA\Property(
      *                     property="logradouro",
      *                     type="string",
@@ -54,6 +60,10 @@ class EnderecoController extends Controller
      *                 @OA\Property(
      *                     property="complemento",
      *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
      *                 ),
      *                 @OA\Property(
      *                     property="bairro",
@@ -69,8 +79,46 @@ class EnderecoController extends Controller
      *                     type="string",
      *                 ),
      *                 @OA\Property(
+     *                     property="pais",
+     *                     type="string",
+     *                 ),
+     *              )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="logradouro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="complemento",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
      *                     property="numero",
      *                     type="integer",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bairro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="uf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     required={"uf"},
+     *                     property="cidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="pais",
+     *                     type="string",
      *                 ),
      *                 example={
      *                     "cep": "95873-377",
@@ -174,17 +222,25 @@ class EnderecoController extends Controller
      *          @OA\Schema(type="integer")
      *      ),
      *     @OA\RequestBody(
+     *         required=true,
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
+     *                     property="cep",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
      *                     property="logradouro",
      *                     type="string",
-     *
      *                 ),
      *                 @OA\Property(
      *                     property="complemento",
      *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
      *                 ),
      *                 @OA\Property(
      *                     property="bairro",
@@ -200,8 +256,8 @@ class EnderecoController extends Controller
      *                     type="string",
      *                 ),
      *                 @OA\Property(
-     *                     property="numero",
-     *                     type="integer",
+     *                     property="pais",
+     *                     type="string",
      *                 ),
      *                 example={
      *                     "cep": "95873-377",
@@ -218,12 +274,12 @@ class EnderecoController extends Controller
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="Ok",
-     *         @OA\Schema(ref="#/components/schemas/Pessoa")
+     *         description="Ok"
      *     ),
+     *      @OA\Response(response=400, description="Bad request")
      *
      * )
-     * */
+     **/
 
     /**
      * Update the specified resource in storage.
@@ -235,13 +291,13 @@ class EnderecoController extends Controller
     public function update(Request $request, $id)
     {
         $validator = \Validator::make($request->all(), [
-          'cep' => 'required',
+          'cep'        => 'required',
           'logradouro' => 'required',
-          'numero' => 'required',
-          'bairro' => 'required',
-          'uf' => 'required',
-          'cidade' => 'required',
-          'pais' => 'required',
+          'numero'     => 'required',
+          'bairro'     => 'required',
+          'uf'         => 'required',
+          'cidade'     => 'required',
+          'pais'       => 'required',
         ]);
 
         if ($validator->fails()) {

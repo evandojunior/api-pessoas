@@ -15,6 +15,6 @@ class Endereco extends Model
       'bairro',
       'uf',
       'cidade',
-      'pais'
+      'pais',
     ];
 }

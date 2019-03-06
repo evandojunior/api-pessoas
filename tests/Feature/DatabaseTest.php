@@ -8,7 +8,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DatabaseTest extends TestCase
 {
-    public function testTableExists()
+    public function testExisteTabelaPessoas()
     {
+        $response = \Schema::hasTable('pessoas');
+
+        $this->assertTrue($response);
+    }
+
+    public function testExisteTabelaEnderecos()
+    {
+        $response = \Schema::hasTable('enderecos');
+
+        $this->assertTrue($response);
     }
 }

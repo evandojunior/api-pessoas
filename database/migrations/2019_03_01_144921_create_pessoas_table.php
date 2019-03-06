@@ -15,7 +15,7 @@ class CreatePessoasTable extends Migration
     {
         Schema::create('pessoas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('endereco_id');
+            $table->unsignedInteger('endereco_id')->nullable();
             $table->foreign('endereco_id')->references('id')->on('enderecos');
             $table->string('nome');
             $table->date('data_nascimento');

@@ -6,17 +6,212 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/enderecos": {
+            "get": {
+                "tags": [
+                    "Endereços"
+                ],
+                "summary": "Listar todos registros",
+                "description": "",
+                "operationId": "index",
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Endereços"
+                ],
+                "summary": "Cadastrar endereço",
+                "description": "",
+                "operationId": "store",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            }
+        },
+        "/api/enderecos/{id}": {
+            "get": {
+                "tags": [
+                    "Endereços"
+                ],
+                "summary": "Exibir dados de um endereço",
+                "description": "",
+                "operationId": "show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do endereço",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Endereços"
+                ],
+                "summary": "Atualizar um endereço",
+                "description": "",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do endereço",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Endereços"
+                ],
+                "summary": "Deletar um endereço",
+                "description": "",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do endereço",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
         "/api/pessoas": {
             "get": {
                 "tags": [
                     "Pessoas"
                 ],
-                "summary": "Lista de pessoas",
+                "summary": "Listar todos registros",
                 "description": "",
                 "operationId": "index",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Ok"
                     },
                     "400": {
                         "description": "Bad request"
@@ -27,53 +222,138 @@
                 "tags": [
                     "Pessoas"
                 ],
-                "summary": "Cadastrar pessoa",
+                "summary": "Cadastrar uma pessoa",
                 "description": "",
-                "operationId": "index",
-                "parameters": [
-                    {
-                        "name": "nome",
-                        "in": "query",
-                        "description": "Nome completo",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "data_nascimento",
-                        "in": "query",
-                        "description": "Data de nascimento",
-                        "required": true,
-                        "schema": {
-                            "type": "date"
-                        }
-                    },
-                    {
-                        "name": "cpf",
-                        "in": "query",
-                        "description": "Numéro do CPF",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sexo",
-                        "in": "query",
-                        "description": "Genêro da pessoa, informe entre: ['Masculino', 'Feminino', 'Outros']",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                "operationId": "store",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "nascionalidade": {
+                                        "type": "string"
+                                    },
+                                    "sexo": {
+                                        "enum": [
+                                            "Masculino",
+                                            "Feminino",
+                                            "Outros"
+                                        ]
+                                    },
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "nascionalidade": {
+                                        "type": "string"
+                                    },
+                                    "sexo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Masculino",
+                                            "Feminino",
+                                            "Outros"
+                                        ]
+                                    },
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "nome": "Dr. Christopher Ricardo Ortega",
+                                    "data_nascimento": "1988-10-14",
+                                    "nascionalidade": "Americano",
+                                    "cpf": "68204823533",
+                                    "sexo": "Outros",
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request"
+                        "description": "Ok"
                     }
                 }
             }
@@ -99,7 +379,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Ok"
                     },
                     "400": {
                         "description": "Bad request"
@@ -110,59 +390,149 @@
                 "tags": [
                     "Pessoas"
                 ],
-                "summary": "Método para atualizar",
+                "summary": "Atualizar registro da pessoa",
                 "description": "",
                 "operationId": "update",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID pessoa",
+                        "description": "ID da pessoa",
                         "required": true,
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "nome",
-                        "in": "query",
-                        "description": "Nome completo",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "data_nascimento",
-                        "in": "query",
-                        "description": "Data de nascimento formato:(YYYY-MM-DD)",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "cpf",
-                        "in": "query",
-                        "description": "Número do CPF",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sexo",
-                        "in": "query",
-                        "description": "Genêro da pessoa, informe entre: [Masculino, Feminino, Outros]",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "nascionalidade": {
+                                        "type": "string"
+                                    },
+                                    "sexo": {
+                                        "enum": [
+                                            "Masculino",
+                                            "Feminino",
+                                            "Outros"
+                                        ]
+                                    },
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "data_nascimento": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "nascionalidade": {
+                                        "type": "string"
+                                    },
+                                    "sexo": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Masculino",
+                                            "Feminino",
+                                            "Outros"
+                                        ]
+                                    },
+                                    "logradouro": {
+                                        "type": "string"
+                                    },
+                                    "complemento": {
+                                        "type": "string"
+                                    },
+                                    "bairro": {
+                                        "type": "string"
+                                    },
+                                    "uf": {
+                                        "type": "string"
+                                    },
+                                    "cidade": {
+                                        "required": [
+                                            "uf"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "numero": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "nome": "Dr. Christopher Ricardo Ortega",
+                                    "data_nascimento": "1988-10-14",
+                                    "nascionalidade": "Americano",
+                                    "cpf": "68204823533",
+                                    "sexo": "Outros",
+                                    "cep": "95873-377",
+                                    "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+                                    "numero": "4557",
+                                    "complemento": "Apto 89",
+                                    "bairro": "Rua Perez",
+                                    "pais": "Brasil",
+                                    "uf": "AM",
+                                    "cidade": "Carrara do Leste"
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Ok"
                     },
                     "400": {
                         "description": "Bad request"
@@ -176,14 +546,14 @@
                 "tags": [
                     "Pessoas"
                 ],
-                "summary": "Deleta uma pessoa",
+                "summary": "Deletar uma pessoa",
                 "description": "",
                 "operationId": "delete",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Id pessoa",
+                        "description": "ID da pessoa",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -192,7 +562,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Ok"
                     },
                     "400": {
                         "description": "Bad request"

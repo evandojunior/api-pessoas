@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Pessoa;
+use App\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -21,9 +22,9 @@ class PessoaController extends Controller
     *      path="/api/pessoas",
     *      operationId="index",
     *      tags={"Pessoas"},
-    *      summary="Lista de pessoas",
+    *      summary="Listar todos registros",
     *      description="",
-    *      @OA\Response(response=200, description="Success"),
+    *      @OA\Response(response=200, description="Ok"),
     *      @OA\Response(response=400, description="Bad request")
     *     )
     */
@@ -35,82 +36,155 @@ class PessoaController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            if (!$pessoas = Pessoa::with('endereco')->get()) {
-                throw new \Exception("Nenhum registro encontrado");
-            }
+        if (!$pessoas = Pessoa::with('endereco')->get()) {
             return response()->json([
-              'pessoas' => $pessoas
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-              'error'   => 'Falha ao obter registros.'
+              'message' => "Nenhum registro encontrado",
+              'data' => []
             ]);
         }
+        return response()->json([
+          'data' => $pessoas
+        ]);
     }
 
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *     path="/api/pessoas",
+     *     description="",
+     *     summary="Cadastrar uma pessoa",
+     *     operationId="store",
+     *     tags={"Pessoas"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="nome",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="data_nascimento",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="cpf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nascionalidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(property="sexo", enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(
+     *                     property="logradouro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="complemento",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bairro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="uf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     required={"uf"},
+     *                     property="cidade",
+     *                     type="string",
+     *                 ),
+     *                 example={
+     *                     "cep": "95873-377",
+     *                     "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                     "numero": "4557",
+     *                     "complemento": "Apto 89",
+     *                     "bairro": "Rua Perez",
+     *                     "pais": "Brasil",
+     *                     "uf": "AM",
+     *                     "cidade": "Carrara do Leste"
+     *                  }
+     *              )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="nome",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="data_nascimento",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="cpf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nascionalidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(property="sexo", type="string",enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(
+     *                     property="logradouro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="complemento",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bairro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="uf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     required={"uf"},
+     *                     property="cidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
+     *                 ),
+     *                 example={
+     *                 "nome": "Dr. Christopher Ricardo Ortega",
+     *                 "data_nascimento": "1988-10-14",
+     *                 "nascionalidade": "Americano",
+     *                 "cpf": "68204823533",
+     *                 "sexo": "Outros",
+     *                 "cep": "95873-377",
+     *                 "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                 "numero": "4557",
+     *                 "complemento": "Apto 89",
+     *                 "bairro": "Rua Perez",
+     *                 "pais": "Brasil",
+     *                 "uf": "AM",
+     *                 "cidade": "Carrara do Leste"
+     *                  }
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Ok",
+     *         @OA\Schema(ref="#/components/schemas/Pessoa")
+     *     )
+     * )
      */
-    public function withAddress(Request $request)
-    {
-        try {
-            if (!$pessoas = Pessoa::with('endereco')->get()) {
-                throw new \Exception("Nenhum registro encontrado");
-            }
-            return response()->json(['pessoas' => $pessoas]);
-        } catch (\Exception $e) {
-            return response()->json([
-              'error'   => 'Falha ao obter registros.'
-            ]);
-        }
-    }
-
-    /**
-    * @OA\Post(
-    *      path="/api/pessoas",
-    *      operationId="index",
-    *      tags={"Pessoas"},
-    *      summary="Cadastrar pessoa",
-    *      description="",
-    *       @OA\Parameter(
-    *          name="nome",
-    *          description="Nome completo",
-    *          required=true,
-    *          in="query",
-    *          @OA\Schema(type="string")
-    *       ),
-    *       @OA\Parameter(
-    *          name="data_nascimento",
-    *          description="Data de nascimento",
-    *          required=true,
-    *          in="query",
-    *          @OA\Schema(
-    *              type="date"
-    *          )
-    *       ),
-    *       @OA\Parameter(
-    *          name="cpf",
-    *          description="Numéro do CPF",
-    *          required=true,
-    *          in="query",
-    *          @OA\Schema(type="string")
-    *       ),
-    *       @OA\Parameter(
-    *          name="sexo",
-    *          description="Genêro da pessoa, informe entre: ['Masculino', 'Feminino', 'Outros']",
-    *          required=true,
-    *          in="query",
-    *          @OA\Schema(type="string")
-    *       ),
-    *       @OA\Response(response=200, description="Success"),
-    *       @OA\Response(response=400, description="Bad request")
-    *     )
-    *
-    */
 
     /**
      * Store a newly created resource in storage.
@@ -120,24 +194,28 @@ class PessoaController extends Controller
      */
     public function store(Request $request)
     {
-      echo '<pre>';
-      var_dump($request->all());
-      exit;
-      dd($request->all());
-        try {
-            $request->validate([
-              'nome'            => 'required',
-              'data_nascimento' => 'required|date',
-              'cpf'             => 'required',
-              'sexo'            => 'required'
-            ]);
-            Pessoa::create($request->all());
-            return $this->respondCreated('Pessoa cadastrada com sucesso!');
-        } catch (ValidationException $e) {
-            return response()->json([
-            'error' => $e->getMessage()
-          ], 401);
+        $validator = \Validator::make($request->all(), [
+          "nome"            => 'required',
+          "data_nascimento" => 'required',
+          "cpf"             => 'required',
+          "sexo"            => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+        $data = $request->all();
+
+        if (!$endereco = Endereco::create($request->all())) {
+            $data['endereco_id'] = $endereco->id;
+        }
+        if (!$pessoa = Pessoa::create($data)) {
+            return response()->json('Não foi possível realizar essa operação', 422);
+        }
+        return response()->json([
+          'message' => 'Pessoa cadastrada com sucesso',
+          'data' => $pessoa
+        ]);
     }
 
     /**
@@ -154,7 +232,7 @@ class PessoaController extends Controller
      *          in="path",
      *          @OA\Schema(type="integer")
      *      ),
-     *      @OA\Response(response=200, description="Success"),
+     *      @OA\Response(response=200, description="Ok"),
      *      @OA\Response(response=400, description="Bad request")
      * )
      */
@@ -165,13 +243,16 @@ class PessoaController extends Controller
      * @param  \App\Pessoa  $pessoa
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Pessoa $pessoa)
+    public function show(Request $request, $id)
     {
         try {
+            if (!$pessoa = Pessoa::with('endereco')->find($id)) {
+                throw new \Exception("Não foi possível localizar o registro: {$id}");
+            }
             return response()->json($pessoa);
         } catch (\Exception $e) {
             return response()->json([
-            'message' => 'Falha ao exibir dados da pessoa'
+            'message' => $e->getMessage()
           ]);
         }
     }
@@ -181,49 +262,146 @@ class PessoaController extends Controller
      *      path="/api/pessoas/{id}",
      *      operationId="update",
      *      tags={"Pessoas"},
-     *      summary="Método para atualizar",
+     *      summary="Atualizar registro da pessoa",
      *      description="",
      *      @OA\Parameter(
      *          name="id",
-     *          description="ID pessoa",
+     *          description="ID da pessoa",
      *          required=true,
      *          in="path",
      *          @OA\Schema(type="integer")
      *      ),
-     *       @OA\Parameter(
-     *          name="nome",
-     *          description="Nome completo",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(type="string")
-     *       ),
-     *       @OA\Parameter(
-     *          name="data_nascimento",
-     *          description="Data de nascimento formato:(YYYY-MM-DD)",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(type="string")
-     *       ),
-     *       @OA\Parameter(
-     *          name="cpf",
-     *          description="Número do CPF",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(type="string")
-     *       ),
-     *       @OA\Parameter(
-     *          name="sexo",
-     *          description="Genêro da pessoa, informe entre: [Masculino, Feminino, Outros]",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(type="string")
-     *       ),
-     *      @OA\Response(response=200, description="Success"),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="nome",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="data_nascimento",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="cpf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nascionalidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(property="sexo", enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(
+     *                     property="logradouro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="complemento",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bairro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="uf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     required={"uf"},
+     *                     property="cidade",
+     *                     type="string",
+     *                 ),
+     *                 example={
+     *                     "cep": "95873-377",
+     *                     "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                     "numero": "4557",
+     *                     "complemento": "Apto 89",
+     *                     "bairro": "Rua Perez",
+     *                     "pais": "Brasil",
+     *                     "uf": "AM",
+     *                     "cidade": "Carrara do Leste"
+     *                  }
+     *              )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="nome",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="data_nascimento",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="cpf",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nascionalidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(property="sexo", type="string",enum={"Masculino", "Feminino", "Outros"}),
+     *                 @OA\Property(
+     *                     property="logradouro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="complemento",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="bairro",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="uf",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     required={"uf"},
+     *                     property="cidade",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="numero",
+     *                     type="integer",
+     *                 ),
+     *                 example={
+     *                 "nome": "Dr. Christopher Ricardo Ortega",
+     *                 "data_nascimento": "1988-10-14",
+     *                 "nascionalidade": "Americano",
+     *                 "cpf": "68204823533",
+     *                 "sexo": "Outros",
+     *                 "cep": "95873-377",
+     *                 "logradouro": "Rua Sebastião Escobar, 17. Bc. 7 Ap. 50",
+     *                 "numero": "4557",
+     *                 "complemento": "Apto 89",
+     *                 "bairro": "Rua Perez",
+     *                 "pais": "Brasil",
+     *                 "uf": "AM",
+     *                 "cidade": "Carrara do Leste"
+     *                  }
+     *              )
+     *         )
+     *     ),
+     *      @OA\Response(response=200,
+     *        description="Ok",
+     *      ),
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=404, description="Resource Not Found")
-     *
      * )
      */
+
     /**
      * Update the specified resource in storage.
      *
@@ -231,28 +409,39 @@ class PessoaController extends Controller
      * @param  \App\Pessoa  $pessoa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pessoa $pessoa)
+    public function update(Request $request, $id)
     {
         //
-        try {
-            $request->validate([
-              'nome',
-              ''
-            ]);
+        $validator = \Validator::make($request->all(), [
+          "nome"            => 'required',
+          "data_nascimento" => 'required',
+          "cpf"             => 'required',
+          "sexo"            => 'required',
+        ]);
 
-            if (!$updated = $pessoa->update($request->all())) {
-                throw new \Exception("Falha ao atualizar o registro: {$pessoa->id}");
-            }
-
-            return response()->json([
-              'message' => 'Registro excluido com sucesso!',
-              $updated,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-            'error'   => $e->getMessage()
-          ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        if (!$pessoa = Pessoa::find($id)) {
+            return response()->json(['error' => "Não foi possível localizar o registro: {$id}"], 402);
+        }
+        $data = $request->all();
+
+        if ($endereco = Endereco::find($pessoa->endereco_id)) {
+            $endereco->update($data);
+        } else {
+            $endereco = Endereco::create($data);
+            $data['endereco_id'] = $endereco->id;
+        }
+
+        if (!$pessoa = Pessoa::update($data)) {
+            return response()->json('Não foi possível realizar essa operação', 422);
+        }
+        return response()->json([
+          'message' => 'Pessoa cadastrada com sucesso',
+          'data' => $pessoa
+        ]);
     }
 
 
@@ -261,19 +450,18 @@ class PessoaController extends Controller
      *      path="/api/pessoas/{id}",
      *      operationId="delete",
      *      tags={"Pessoas"},
-     *      summary="Deleta uma pessoa",
+     *      summary="Deletar uma pessoa",
      *      description="",
      *      @OA\Parameter(
      *          name="id",
-     *          description="Id pessoa",
+     *          description="ID da pessoa",
      *          required=true,
      *          in="path",
-     *          @OA\Schema(type="integer"  )
+     *          @OA\Schema(type="integer")
      *      ),
-     *      @OA\Response(response=200, description="Success"),
+     *      @OA\Response(response=200, description="Ok"),
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=404, description="Resource Not Found")
-     *
      * )
      */
     /**
@@ -282,20 +470,17 @@ class PessoaController extends Controller
      * @param  \App\Pessoa  $pessoa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pessoa $pessoa)
+    public function destroy($id)
     {
-        //
-        try {
-            if (!$deleted = $pessoa->delete()) {
-                throw new \Exception("Não foi possível deletar o registro: {$pessoa->id}");
-            }
-            return response()->json([
-            'message' => 'Registro excluido com sucesso!'
-          ]);
-        } catch (\Exception $e) {
-            return response()->json([
-            'error'   => $e->getMessage()
-          ]);
+        if (!$pessoa = Pessoa::find($id)) {
+            return response()->json(['error' => "Não foi possível localizar o registro: {$id}"], 402);
         }
+
+        if (!$deleted = $pessoa->delete()) {
+            return response()->json(['error' => "Não foi possível deletar o registro: {$id}"], 422);
+        }
+        return response()->json([
+        'message' => 'Registro deletado com sucesso',
+      ]);
     }
 }

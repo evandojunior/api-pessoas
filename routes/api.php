@@ -24,3 +24,4 @@ use Illuminate\Http\Request;
 // });
 Route::get('/pessoas/enderecos', 'PessoaController@withAddress');
 Route::resource('/pessoas', 'PessoaController');
+Route::resource('/enderecos', 'EnderecoController');

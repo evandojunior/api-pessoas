@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Pessoa extends Model
 {
     //
-    protected $fillables = [
+    protected $fillable = [
       'nome',
-      'endereco_id',
-      'data_nascimento',
       'cpf',
-      'sexo'
+      'nascionalidade',
+      'data_nascimento',
+      'sexo',
+      'endereco_id',
     ];
 
 

@@ -3,6 +3,12 @@
 
 Aplicação desenvolvida para o Teste da vaga de PHP Pleno.
 
+Foram usados no desenvolvimento: 
+- PHP versão minima requerida 7.1.3
+- [Laravel 5.8](https://laravel.com/)
+- [Swagger](https://github.com/DarkaOnLine/L5-Swagger)
+- Banco de dados integrado: SQLite
+
 ## Instalação
 
 Após realizar o clone do projeto, execute os seguintes comandos:
